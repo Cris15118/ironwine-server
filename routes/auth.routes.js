@@ -100,7 +100,8 @@ router.post("/login", async (req, res, next) => {
 
 //GET "/api/auth/verify" indicarle al FE si el usuario esta logueado
 router.get("/verify" ,isAuthenticated,(req,res,next)=>{
-    res.json({paylod:req.payload})
+  
+    res.json({payload:req.payload})
 })
 
 
