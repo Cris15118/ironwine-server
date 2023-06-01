@@ -8,15 +8,22 @@ const isAuthenticated = jwt({
         console.log("no hay token");
         return null;
       }
-      const tokenArr = req.headers.authorization.split(" ");
-      const tokenType = tokenArr[0];
-      const token = tokenArr[1];
-      if (tokenType !== "Bearer") {
-        console.log("Token de tipo incorrecto");
+      if(req.headers.authorization)
+      {
+        const tokenArr = req.headers.authorization.split(" ");
+        const tokenType = tokenArr[0];
+        const token = tokenArr[1];
+        if (tokenType !== "Bearer") {
+          console.log("Token de tipo incorrecto");
+          return null;
+        }
+        console.log("Token entregado");
+        return token;
+      }
+      else{
         return null;
       }
-      console.log("Token entregado");
-      return token;
+     
     },
   });
   

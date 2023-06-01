@@ -18,10 +18,7 @@ router.post("/signup", async (req, res, next) => {
   const regexPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
 
   if (!regexPattern.test(password)) {
-    res.render("auth/signup", {
-      errorMessage:
-        "La contraseña es debil. Necesita al menos una mayúscula, una minúscula, un caracter especial y mínimo 8 caracteres",
-    });
+    res.status(400).json({errorMessage:"La contraseña es débil. Necesita al menos 1 mayúscula y un caracter especial y un mínimo de 8 caracteres"})
     return;
   }
   //verificar si el usuario esta registrado
@@ -80,7 +77,7 @@ router.post("/login", async (req, res, next) => {
     const payload = {
       _id: foundUser._id,
       email: foundUser.email,
-      role: foundUser.role,
+      role: foundUser.role
     };
     const authToken = jwt.sign(
         payload,
