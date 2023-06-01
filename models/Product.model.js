@@ -28,7 +28,11 @@ const productSchema = new Schema({
 },
 	bodega: {
 	type: String,
-	requered: true
+	required: true
+	}
+	,stock:{
+		type: Number,
+		default:1
 	}
 
 })

@@ -6,16 +6,11 @@ const compraSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    productItem: [
+    productItem: 
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
-      },
-    ],
-
-    status: {
-      enum: ["carrito", "comprado"],
-    },
+      }    
   },
   {
     timestamps: true,
