@@ -7,6 +7,7 @@ router.use("/auth",require("./auth.routes"))
 router.use("/upload",require("./upload.routes")) //cloudinary
 router.use("/admin",require("./admin.routes")) //rutas administrador
 router.use("/cart",require("./cart.routes")) //rutas carrito compra
+router.use("/products",require("./products.routes")) //rutas carrito compra
 
 
 module.exports = router;
