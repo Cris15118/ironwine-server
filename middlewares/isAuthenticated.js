@@ -27,5 +27,7 @@ const isAuthenticated = jwt({
      
     },
   });
+
+ 
   
   module.exports = isAuthenticated;
