@@ -8,6 +8,6 @@ router.use("/upload",require("./upload.routes")) //cloudinary
 router.use("/admin",require("./admin.routes")) //rutas administrador
 router.use("/cart",require("./cart.routes")) //rutas carrito compra
 router.use("/products",require("./products.routes")) //rutas carrito compra
-
+router.use("/wishlist", require("./wishList.routes"))
 
 module.exports = router;
