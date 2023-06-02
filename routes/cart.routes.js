@@ -40,9 +40,9 @@ router.patch("/:productId/add", isAuthenticated, async (req, res, next) => {
         { new: true }
       );
     } else {
-      const response = await User.findOneAndUpdate(
+       await User.findOneAndUpdate( // para encontrar el elemento a actualizar y el indice del carrito
         { $and: [{ _id: idUser }, { "cart.productId": productId }] },
-        { $inc: { "cart.$.quantity": 1 } }
+        { $inc: { "cart.$.quantity": 1 } } // el $ es usado para saber cual es el indice a actualizar
         // incrementa en uno la cantidad de ese produccto
       );
     }
@@ -98,9 +98,9 @@ router.put("/deleteall", isAuthenticated, async (req, res, next) => {
 
 //POST "/cart/historial/add" añade compras del usuario al historial una vez pagadas
 router.post("/historial/add",isAuthenticated,async(req,res,next)=>{  //todo cambiar cuando hagamos pasarela de pago
-  console.log(req.body.compras)
+  console.log(req.body)
   //await Compras.insertMany(req.body.compras)
-  res.json(req.body.compras)
+  res.json(req.body)
 
 
 }) 
