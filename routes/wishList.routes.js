@@ -25,14 +25,15 @@ router.patch("/:productId/add", isAuthenticated, async (req, res, next) => {
   const { productId } = req.params;
 
   try {
-    const response = await User.findByIdAndUpdate(
+     await User.findByIdAndUpdate(
       idUser,
       {
-        $addToSet: { wishList: { productId } },
+        $addToSet: { wishList:  productId  },
       },
       { new: true }
     );
-    res.json("Deseo editado");
+    
+    res.json("Deseo Añadido");
   } catch (error) {
     next(error);
     console.log(error);
@@ -46,7 +47,7 @@ router.patch("/:productId/pull", isAuthenticated, async(req, res, next)=>{
     try {
         const response = await User.findByIdAndUpdate(idUser,
             {
-                $pull: {wishList: {productId}}
+                $pull: {wishList: productId}
             },{new:true})
             res.json("deseo eliminado")
         
