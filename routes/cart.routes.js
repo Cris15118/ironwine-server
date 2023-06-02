@@ -2,6 +2,7 @@ const router = require("express").Router();
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const Product = require("../models/Product.model");
 const User = require("../models/User.model");
+const Compras = require("../models/Compras.model");
 
 //GET  "/api/cart" devuelve todos los productos del carrito
 router.get("/", isAuthenticated, async (req, res, next) => {
@@ -94,5 +95,14 @@ router.put("/deleteall", isAuthenticated, async (req, res, next) => {
     next(err);
   }
 });
+
+//POST "/cart/historial/add" añade compras del usuario al historial una vez pagadas
+router.post("/historial/add",isAuthenticated,async(req,res,next)=>{  //todo cambiar cuando hagamos pasarela de pago
+  console.log(req.body.compras)
+  //await Compras.insertMany(req.body.compras)
+  res.json(req.body.compras)
+
+
+}) 
 
 module.exports = router;
