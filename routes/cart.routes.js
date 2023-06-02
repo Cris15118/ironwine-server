@@ -22,16 +22,39 @@ router.get("/", isAuthenticated, async (req, res, next) => {
 //PATCH "/api/:productId/add"  añade un producto a la compra en el array del carrito del usuario
 router.patch("/:productId/add", isAuthenticated, async (req, res, next) => {
   const idUser = req.payload._id; // id del usuario cogido del token
-  const { id } = req.params; //id del producto a añadir
+  const { productId } = req.params; //id del producto a añadir
   try {
-    const response = await User.findByIdAndUpdate(
-      idUser,
-      {
-        $push: { cart: {id} }, //añade un producto al array de carrito
-      },
-      { new: true }
-    );
-    res.json("Documento editado");
+    console.log("productId", productId);
+    const foundUser = await User.findByIdAndUpdate(idUser, {
+      cart: { $elemMatch: { productId: productId } },
+    });
+    console.log("foundUser", foundUser.cart);
+    if (!foundUser) {
+      // si no existe ese producto en el carrito del usuario
+
+      await User.findByIdAndUpdate(
+        idUser,
+        {
+          $push: { cart: { productId } }, //añade un producto al array de carrito
+        },
+        { new: true }
+      );
+      res.json("!foundUser Documento editado");
+    } else {
+      // const response=await User.findOneAndUpdate(
+      //   { _id: idUser, cart: { productId: productId } },
+      //   { $inc: { quantity: 1 } } // vuelve a meter todos los carritos
+       
+      // );
+      const response=await User.findOneAndUpdate(
+        { _id: idUser, "cart._id": productId } ,{ $inc: { "cart.$.quantity": 1 }}
+        
+        // vuelve a meter todos los carritos
+       
+      );
+      console.log("response",response)
+      res.json("foundUser Documento editado");
+    }
   } catch (err) {
     console.log(err);
     next(err);
@@ -54,10 +77,6 @@ router.patch("/:productId/pull", isAuthenticated, async (req, res, next) => {
         break; // solo queremos la primera coincidencia
       }
     }
-    await User.findByIdAndUpdate(
-      idUser,
-      {cart: cart  } // vuelve a meter todos los carritos
-    );
 
     res.json(cart, "un elemento eliminado del carrito");
   } catch (err) {
@@ -68,11 +87,10 @@ router.patch("/:productId/pull", isAuthenticated, async (req, res, next) => {
 
 // PUT "/api/cart/deleteall" vacía carrito
 router.put("/deleteall", isAuthenticated, async (req, res, next) => {
-
   const idUser = req.payload._id; // id del usuario cogido del token
 
   try {
-    await User.findByIdAndUpdate(idUser,  {  cart: []  }); // quita todos los elementos del array de ese usuario
+    await User.findByIdAndUpdate(idUser, { cart: [] }); // quita todos los elementos del array de ese usuario
     res.json("Carrito vacío");
   } catch (err) {
     next(err);
