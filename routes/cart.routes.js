@@ -24,11 +24,10 @@ router.patch("/:productId/add", isAuthenticated, async (req, res, next) => {
   const idUser = req.payload._id; // id del usuario cogido del token
   const { productId } = req.params; //id del producto a añadir
   try {
-    console.log("productId", productId);
-    const foundUser = await User.findByIdAndUpdate(idUser, {
-      cart: { $elemMatch: { productId: productId } },
+    const foundUser = await User.findOne({
+      $and: [{ _id: idUser }, { "cart.productId": productId }],
     });
-    console.log("foundUser", foundUser.cart);
+
     if (!foundUser) {
       // si no existe ese producto en el carrito del usuario
 
@@ -39,46 +38,45 @@ router.patch("/:productId/add", isAuthenticated, async (req, res, next) => {
         },
         { new: true }
       );
-      res.json("!foundUser Documento editado");
     } else {
-      // const response=await User.findOneAndUpdate(
-      //   { _id: idUser, cart: { productId: productId } },
-      //   { $inc: { quantity: 1 } } // vuelve a meter todos los carritos
-       
-      // );
-      const response=await User.findOneAndUpdate(
-        { _id: idUser, "cart._id": productId } ,{ $inc: { "cart.$.quantity": 1 }}
-        
-        // vuelve a meter todos los carritos
-       
+      const response = await User.findOneAndUpdate(
+        { $and: [{ _id: idUser }, { "cart.productId": productId }] },
+        { $inc: { "cart.$.quantity": 1 } }
+        // incrementa en uno la cantidad de ese produccto
       );
-      console.log("response",response)
-      res.json("foundUser Documento editado");
     }
+    res.json("foundUser Documento editado");
   } catch (err) {
     console.log(err);
     next(err);
   }
 });
 
-// PATCH "/api/cart/:productId/pull" quita producto del array del carrito del usuario
+// PATCH "/api/cart/:productId/pull" disminute cantidad del producto del array del carrito del usuario y si es 0 lo elimina
 router.patch("/:productId/pull", isAuthenticated, async (req, res, next) => {
   const idUser = req.payload._id; // id del usuario cogido del token
   const { productId } = req.params; //id del producto a añadir
   try {
-    //busca el carrito del usuario con esa id
-    const foundUser = await User.findById(idUser);
-    const cart = foundUser.cart;
+    const foundUser = await User.findOne({
+      $and: [{ _id: idUser }, { "cart.productId": productId }],
+    });
 
-    for (let i = 0; i < cart.length; i++) {
-      //encuentra el primer elemento del carrito que coincida con el id y lo quita del array
-      if (cart[i].toString() === productId) {
-        cart.splice(i, 1);
-        break; // solo queremos la primera coincidencia
-      }
+    if (foundUser.cart[0].quantity > 1) {
+      // si es mayor que uno resta uno
+      await User.findOneAndUpdate(
+        { $and: [{ _id: idUser }, { "cart.productId": productId }] },
+        { $inc: { "cart.$.quantity": -1 } }
+        // incrementa en uno la cantidad de ese produccto
+      );
+      res.json("quitado un elemento de cantidad carrito");
+    } else {
+    
+      // const response=await User.findByIdAndUpdate(idUser,{$pull:{"cart.$.productId":productId}})
+      await User.findByIdAndUpdate(idUser, {
+        $pull: { cart: { productId: productId } },
+      });
+      res.json("Borrado de elemento del carrito por cantidad 0");
     }
-
-    res.json(cart, "un elemento eliminado del carrito");
   } catch (err) {
     console.log(err);
     next(err);
