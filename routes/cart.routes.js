@@ -96,13 +96,6 @@ router.put("/deleteall", isAuthenticated, async (req, res, next) => {
   }
 });
 
-//POST "/cart/historial/add" añade compras del usuario al historial una vez pagadas
-router.post("/historial/add",isAuthenticated,async(req,res,next)=>{  //todo cambiar cuando hagamos pasarela de pago
-  console.log(req.body)
-  //await Compras.insertMany(req.body.compras)
-  res.json(req.body)
 
-
-}) 
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const { Schema, model,  default: mongoose } = require("mongoose");
+const { Schema, model, default: mongoose } = require("mongoose");
 
 const compraSchema = new Schema(
   {
@@ -6,11 +6,14 @@ const compraSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    productItem: 
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-      }    
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+    },
+    quantity: {
+      type: Number,
+      required: true,
+    },
   },
   {
     timestamps: true,
