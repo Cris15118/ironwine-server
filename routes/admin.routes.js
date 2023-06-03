@@ -7,13 +7,13 @@ const uploader= require("../middlewares/cloudinary.config")
 
 //router.post("/api/create",uploader.single("image"),async(req,res,next)=>{
 router.post("/create",async(req,res,next)=>{
-const {name,description,price,tipo,bodega,stock} = req.body 
+const {name,description,price,tipo,bodega,stock,image} = req.body 
 
 try{
     await Product.create({
       
-        name,description,price,tipo,bodega,stock//!  probar imagen
-       // name,description,price,tipo,bodega,stock,image:req.file.path //!  probar imagen
+        
+        name,description,price,tipo,bodega,stock,image //!  probar imagen
     })
     res.json("Documento creado")
 
