@@ -12,8 +12,8 @@ router.get("/", isAuthenticated, async (req, res, next) => {
       "cart",
       "name image price"
     ); //* retorna solo los campos especificados dentro del string, separados por espacios
-    console.log(response);
-    res.json(response);
+   
+    res.json(response.cart); // retorna el carrito de ese usuario
   } catch (err) {
     console.log(err);
     next(err);
