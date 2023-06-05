@@ -10,9 +10,9 @@ router.get("/", isAuthenticated, async (req, res, next) => {
   try {
     const response = await User.findById(userId).populate(
       "cart.productId", // hay que ponerla propiedad dentro del carrito
-      "name image price"
+      "_id name image price"
     ); //* retorna solo los campos especificados dentro del string, separados por espacios
-   
+
     res.json(response.cart); // retorna el carrito de ese usuario
   } catch (err) {
     console.log(err);
@@ -24,6 +24,7 @@ router.get("/", isAuthenticated, async (req, res, next) => {
 router.patch("/:productId/add", isAuthenticated, async (req, res, next) => {
   const idUser = req.payload._id; // id del usuario cogido del token
   const { productId } = req.params; //id del producto a añadir
+  let updatedUser = null;
   try {
     const foundUser = await User.findOne({
       $and: [{ _id: idUser }, { "cart.productId": productId }],
@@ -32,21 +33,28 @@ router.patch("/:productId/add", isAuthenticated, async (req, res, next) => {
     if (!foundUser) {
       // si no existe ese producto en el carrito del usuario
 
-      await User.findByIdAndUpdate(
+      updatedUser = await User.findByIdAndUpdate(
         idUser,
         {
           $push: { cart: { productId } }, //añade un producto al array de carrito
         },
         { new: true }
-      );
+      ).populate("cart.productId", "_id name image price");
     } else {
-       await User.findOneAndUpdate( // para encontrar el elemento a actualizar y el indice del carrito
+      updatedUser = await User.findOneAndUpdate(
+        // para encontrar el elemento a actualizar y el indice del carrito
         { $and: [{ _id: idUser }, { "cart.productId": productId }] },
-        { $inc: { "cart.$.quantity": 1 } } // el $ es usado para saber cual es el indice a actualizar
+        { $inc: { "cart.$.quantity": 1 } }, // el $ es usado para saber cual es el indice a actualizar
         // incrementa en uno la cantidad de ese produccto
-      );
+        { new: true }
+      )
+      .populate("cart.productId", "_id name image price"); //.select({cart:1})
     }
-    res.json("foundUser Documento editado");
+
+    const productFound = updatedUser.cart.find((eachProduct) => {
+      return eachProduct.productId._id.toString() === productId;
+    });
+    res.json(productFound);
   } catch (err) {
     console.log(err);
     next(err);
@@ -57,27 +65,40 @@ router.patch("/:productId/add", isAuthenticated, async (req, res, next) => {
 router.patch("/:productId/pull", isAuthenticated, async (req, res, next) => {
   const idUser = req.payload._id; // id del usuario cogido del token
   const { productId } = req.params; //id del producto a añadir
+  let updatedUser = null;
   try {
-    const foundUser = await User.findOne({
-      $and: [{ _id: idUser }, { "cart.productId": productId }],
-    });
+    const foundUser = await User.findOne(
+      {
+        $and: [{ _id: idUser }, { "cart.productId": productId }],
+      },
+      { new: true }
+    );
 
     if (foundUser.cart[0].quantity > 1) {
       // si es mayor que uno resta uno
-      await User.findOneAndUpdate(
+      updatedUser = await User.findOneAndUpdate(
         { $and: [{ _id: idUser }, { "cart.productId": productId }] },
-        { $inc: { "cart.$.quantity": -1 } }
+        { $inc: { "cart.$.quantity": -1 } },
+        { new: true }
         // incrementa en uno la cantidad de ese produccto
-      );
-      res.json("quitado un elemento de cantidad carrito");
+      ).populate("cart.productId", "_id name image price");
     } else {
-    
       // const response=await User.findByIdAndUpdate(idUser,{$pull:{"cart.$.productId":productId}})
-      await User.findByIdAndUpdate(idUser, {
-        $pull: { cart: { productId: productId } },
-      });
-      res.json("Borrado de elemento del carrito por cantidad 0");
+      updatedUser = await User.findByIdAndUpdate(
+        idUser,
+        {
+          $pull: { cart: { productId: productId } },
+        },
+        { new: true }
+      )
+        .populate("cart.productId", "_id name image price")
+        .select({ cart: 1 });
     }
+
+    const productFound = updatedUser.cart.find((eachProduct) => {
+      return eachProduct.productId._id.toString() === productId;
+    });
+    res.json(productFound);
   } catch (err) {
     console.log(err);
     next(err);
@@ -95,7 +116,5 @@ router.put("/deleteall", isAuthenticated, async (req, res, next) => {
     next(err);
   }
 });
-
-
 
 module.exports = router;
