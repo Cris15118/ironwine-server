@@ -116,7 +116,7 @@ router.put("/deleteall", isAuthenticated, async (req, res, next) => {
 
   try {
     await User.findByIdAndUpdate(idUser, { cart: [] }); // quita todos los elementos del array de ese usuario
-    res.json("Carrito vacío");
+    res.json([]);
   } catch (err) {
     next(err);
   }
