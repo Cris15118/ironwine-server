@@ -9,7 +9,7 @@ router.get("/", isAuthenticated, async (req, res, next) => {
   const userId = req.payload._id;
   try {
     const response = await User.findById(userId).populate(
-      "cart",
+      "cart.productId", // hay que ponerla propiedad dentro del carrito
       "name image price"
     ); //* retorna solo los campos especificados dentro del string, separados por espacios
    
