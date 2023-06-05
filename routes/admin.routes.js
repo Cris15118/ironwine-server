@@ -30,16 +30,16 @@ catch(err)
 router.put("/:id",async(req,res,next)=>{
 
     const {id} = req.params
-    const {name,description,price,tipo,bodega,stock} = req.body 
+    const {name,description,price,tipo,bodega,stock,image} = req.body 
 
-    if(!name || !description || !price || !tipo || !bodega || !stock)
+    if(!name || !description || !price || !tipo || !bodega || !stock || !image)
     {
         res.json("Los campos deben de estar llenos")
         return
     }
 
     try{
-        const response = await Product.findByIdAndUpdate(id,{name,description,price,tipo,bodega,stock},{new:true})
+        const response = await Product.findByIdAndUpdate(id,{name,description,price,tipo,bodega,stock,image},{new:true})
         res.json("documento actualizado")
     }
     catch(err)
