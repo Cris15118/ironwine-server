@@ -48,7 +48,7 @@ router.patch("/:productId/add", isAuthenticated, async (req, res, next) => {
         // incrementa en uno la cantidad de ese produccto
         { new: true }
       )
-      .populate("cart.productId", "_id name image price"); //.select({cart:1})
+      .populate("cart.productId", "_id name image price").select({cart:1})
     }
 
     const productFound = updatedUser.cart.find((eachProduct) => {
@@ -70,10 +70,10 @@ router.patch("/:productId/pull", isAuthenticated, async (req, res, next) => {
     const foundUser = await User.findOne(
       {
         $and: [{ _id: idUser }, { "cart.productId": productId }],
-      },
-      { new: true }
+      }
+     
     );
-
+      console.log(foundUser)
     if (foundUser.cart[0].quantity > 1) {
       // si es mayor que uno resta uno
       updatedUser = await User.findOneAndUpdate(
@@ -94,10 +94,12 @@ router.patch("/:productId/pull", isAuthenticated, async (req, res, next) => {
         .populate("cart.productId", "_id name image price")
         .select({ cart: 1 });
     }
-
-    const productFound = updatedUser.cart.find((eachProduct) => {
-      return eachProduct.productId._id.toString() === productId;
-    });
+   // console.log(updatedUser)
+     const productFound = updatedUser.cart.find((eachProduct) => {
+      console.log(updatedUser.cart)
+       return eachProduct.productId._id.toString() === productId;
+     });
+  
     res.json(productFound);
   } catch (err) {
     console.log(err);
