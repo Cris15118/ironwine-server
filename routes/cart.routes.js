@@ -48,7 +48,8 @@ router.patch("/:productId/add", isAuthenticated, async (req, res, next) => {
         // incrementa en uno la cantidad de ese produccto
         { new: true }
       )
-      .populate("cart.productId", "_id name image price").select({cart:1})
+        .populate("cart.productId", "_id name image price")
+        .select({ cart: 1 });
     }
 
     const productFound = updatedUser.cart.find((eachProduct) => {
@@ -70,20 +71,23 @@ router.patch("/:productId/pull", isAuthenticated, async (req, res, next) => {
     const foundUser = await User.findOne(
       {
         $and: [{ _id: idUser }, { "cart.productId": productId }],
-      }
-     
-    );
-      console.log(foundUser)
+      },
+      { "cart.$": 1 }
+    ); // para que devuelva solo ese producto dentro del array
+
     if (foundUser.cart[0].quantity > 1) {
-      // si es mayor que uno resta uno
+      //si encuentra el producto que es mayor a cantidad 1, resta, y si no lo borra porque tiene cantidad 1 y va a ser 0
+
       updatedUser = await User.findOneAndUpdate(
         { $and: [{ _id: idUser }, { "cart.productId": productId }] },
         { $inc: { "cart.$.quantity": -1 } },
         { new: true }
+
         // incrementa en uno la cantidad de ese produccto
-      ).populate("cart.productId", "_id name image price");
+      )
+        .populate("cart.productId", "_id name image price")
+        .select({ cart: 1 });
     } else {
-      // const response=await User.findByIdAndUpdate(idUser,{$pull:{"cart.$.productId":productId}})
       updatedUser = await User.findByIdAndUpdate(
         idUser,
         {
@@ -94,12 +98,11 @@ router.patch("/:productId/pull", isAuthenticated, async (req, res, next) => {
         .populate("cart.productId", "_id name image price")
         .select({ cart: 1 });
     }
-   // console.log(updatedUser)
-     const productFound = updatedUser.cart.find((eachProduct) => {
-      console.log(updatedUser.cart)
-       return eachProduct.productId._id.toString() === productId;
-     });
-  
+
+    const productFound = updatedUser.cart.find((eachProduct) => {
+      return eachProduct.productId._id.toString() === productId;
+    });
+
     res.json(productFound);
   } catch (err) {
     console.log(err);
