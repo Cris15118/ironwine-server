@@ -10,7 +10,7 @@ const compraSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
     },
-    price:{
+    totalPrice:{
       type:Number,
       required:true
     },

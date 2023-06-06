@@ -10,9 +10,9 @@ router.get("/", isAuthenticated, async (req, res, next) => {
     const response = await User.findById(userId).populate(
       "wishList",
       "name image price"
-    );
-    console.log(response);
-    res.json("deseo añadido");
+    ).select({wishlist:1})
+  
+    res.json(response.wishList);
   } catch (error) {
     next(error);
     console.log(error);
