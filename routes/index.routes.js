@@ -10,6 +10,7 @@ router.use("/cart",require("./cart.routes")) //rutas carrito compra
 router.use("/products",require("./products.routes")) //rutas carrito compra
 router.use("/wishlist", require("./wishList.routes")) // rutas de lista de deseos
 router.use("/historial", require("./historial.routes")) // ruta del historial de la compras
-router.use("/payment", require("./payment.routes"))
+router.use("/payment", require("./payment.routes"))// ruta de pasarela de pago
+router.use("/comentario", require("./comentario.routes")) // ruta comentarios
 
 module.exports = router;
