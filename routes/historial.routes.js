@@ -28,7 +28,7 @@ router.post("/add", isAuthenticated, async (req, res, next) => {
     cloneCartArr.map((eachProduct) => {
       //recorrer array y agregar nuevo campo user con la id del usuario
     
-      eachProduct.price=eachProduct.productId.price*eachProduct.quantity
+      eachProduct.totalPrice=eachProduct.productId.price*eachProduct.quantity
       eachProduct.user = idUser
       return eachProduct;
     });
