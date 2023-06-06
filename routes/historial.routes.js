@@ -24,9 +24,10 @@ router.post("/add", isAuthenticated, async (req, res, next) => {
     const foundUser = await User.findById(idUser).populate("cart.productId"); //coge el carrito del usuario y lo inserta en Compras
 
     const cloneCartArr = JSON.parse(JSON.stringify(foundUser.cart)); //clonar array del carrito
+  
     cloneCartArr.map((eachProduct) => {
       //recorrer array y agregar nuevo campo user con la id del usuario
-      eachProduct._id=eachProduct.productId._id
+    
       eachProduct.price=eachProduct.productId.price
       eachProduct.user = idUser
       return eachProduct;
