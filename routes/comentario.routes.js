@@ -2,7 +2,7 @@ const router = require("express").Router();
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const Comentario = require("../models/Comentario.model")
 
-//POST "/comentario/:id/create" recoge los datos del formulario de crear comentario
+//POST "/api/comentario/:productId/create" recoge los datos del formulario de crear comentario
 router.post("/:productId/create",isAuthenticated, async (req, res, next)=>{
     const idUser = req.payload._id;
     const { productId } = req.params;
@@ -14,10 +14,23 @@ router.post("/:productId/create",isAuthenticated, async (req, res, next)=>{
 
         const createComentario = await Comentario.create({
             user: idUser,
-            product: productId,
+            products: productId,
             comentario: req.body.comentario
         })
         res.json("comentario creado")
+    } catch (error) {
+        next(error)
+    }
+})
+
+// GET "/api/comentario/:productId"
+router.get("/:productId",isAuthenticated, async (req, res, next)=>{
+    const idUser = req.payload._id;
+    const { productId } = req.params;
+    try {
+        const response = await Comentario.find({products: productId}).populate("user", "comentarios")
+        res.json(response)
+        
     } catch (error) {
         next(error)
     }
