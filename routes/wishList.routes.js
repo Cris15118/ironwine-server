@@ -14,35 +14,40 @@ router.get("/", isAuthenticated, async (req, res, next) => {
   
     res.json(response.wishList);
   } catch (error) {
-    next(error);
     console.log(error);
+    next(error);
+  
   }
 });
 
 //GET "/api/wishlist/in/:productId" devuelve si ese usuario tiene ese producto en su lista de deseos
 router.get("/in/:productId", isAuthenticated, async (req, res, next) => {
-  const userId = req.payload._id;
+  
   const productId=req.params.productId
   
-  console.log(userId,"userId",productId)
-  try {
-    const response= await User.findOne({
-      $and: [{ _id: userId }, {wishList:{ "$in" :[productId] }}],
-    });
-
-   // { favouriteFoods: { "$in" : ["sushi"]} }
-   if(response)
-   {
-    res.json(true);
-   }
-   else{
-    res.json(false);
-   }
-    
-  } catch (error) {
-    next(error);
-    console.log(error);
-  }
+    try {
+     
+      const userId = req.payload._id;
+      const response= await User.findOne({
+        $and: [{ _id: userId }, {wishList:{ "$in" :[productId] }}],
+      });
+  
+     // { favouriteFoods: { "$in" : ["sushi"]} }
+     if(response)
+     {
+      res.json(true);
+     }
+     else{
+      res.json(false);
+     }
+      
+    } catch (error) {
+      console.log(error);
+      next(error);
+      
+    }
+  
+ 
 });
 //GET "/api/wishlist" devuelve todos los productos de la lista de deseos
 router.get("/", isAuthenticated, async (req, res, next) => {

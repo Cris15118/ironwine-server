@@ -19,6 +19,7 @@ router.post("/:productId/create",isAuthenticated, async (req, res, next)=>{
         })
         res.json("comentario creado")
     } catch (error) {
+        console.log(error)
         next(error)
     }
 })
@@ -32,6 +33,7 @@ router.get("/:productId",isAuthenticated, async (req, res, next)=>{
         res.json(response)
         
     } catch (error) {
+        console.log(error)
         next(error)
     }
 })
