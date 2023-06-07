@@ -11,7 +11,8 @@ const comentariosSchema = new Schema({
     },
     comentario: {
         type: String,
-        required: true
+        required: true,
+        maxLength: 250
     }
 })
 const Comentario = model("Comentario", comentariosSchema)
