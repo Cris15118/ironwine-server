@@ -28,7 +28,7 @@ router.get("/:productId",isAuthenticated, async (req, res, next)=>{
     const idUser = req.payload._id;
     const { productId } = req.params;
     try {
-        const response = await Comentario.find({products: productId}).populate("user", "comentarios")
+        const response = await Comentario.find({products: productId}).populate("user", "username")
         res.json(response)
         
     } catch (error) {
