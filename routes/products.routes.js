@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const isAuthenticated = require("../middlewares/isAuthenticated");
 const Product = require("../models/Product.model");
 
 // GET "/api/products" => envia al FE todos los productos

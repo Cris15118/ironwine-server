@@ -22,8 +22,8 @@ router.get("/", isAuthenticated, async (req, res, next) => {
 //GET "/api/wishlist/in/:productId" devuelve si ese usuario tiene ese producto en su lista de deseos
 router.get("/in/:productId", isAuthenticated, async (req, res, next) => {
   const userId = req.payload._id;
-  
   const productId=req.params.productId
+  
   console.log(userId,"userId",productId)
   try {
     const response= await User.findOne({
