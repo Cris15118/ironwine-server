@@ -5,7 +5,7 @@ const Product = require("../models/Product.model");
 // GET "/api/products" => envia al FE todos los productos
 router.get ("/", async (req, res, next)=>{
     try {
-        const response = await Product.find().select({name:1, image:1, price:1})
+        const response = await Product.find().select({name:1, image:1, price:1,tipo:1})
         res.json(response)
         
     } catch (error) {

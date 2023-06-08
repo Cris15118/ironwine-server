@@ -126,4 +126,24 @@ router.put("/deleteall", isAuthenticated, async (req, res, next) => {
     next(err);
   }
 });
+
+//GET  "/api/cart/total" devuelve la cantidad total del carrito
+router.get("/total", isAuthenticated, async (req, res, next) => {
+  const userId = req.payload._id;
+  try {
+    const response = await User.findById(userId).populate(
+      "cart.productId", // hay que ponerla propiedad dentro del carrito
+      "_id name image price"
+    ); //* retorna solo los campos especificados dentro del string, separados por espacios
+      console.log(response)
+    const total = response.cart.reduce((accumulator, eachProduct) => {
+      return accumulator + eachProduct.quantity * eachProduct.productId.price;
+    }, 0);
+
+    res.json(total); // retorna el total del carrito de ese usuario
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+});
 module.exports = router;
