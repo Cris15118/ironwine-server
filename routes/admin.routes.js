@@ -38,7 +38,8 @@ router.put("/:id", async (req, res, next) => {
   const { name, description, price, tipo, bodega, stock, image } = req.body;
 
   if (!name || !description || !price || !tipo || !bodega || !stock || !image) {
-    res.json("Los campos deben de estar llenos");
+    
+    res.status(400).json({errorMessage:"Todos los campos son obligatorios."});
     return;
   }
 
