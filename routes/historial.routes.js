@@ -10,7 +10,7 @@ router.get("/", isAuthenticated, async (req, res, next) => {
   try {
     const response = await Compras.find({ user: userId }) //busca en la coleccion compras los productos que tengan esa ID de usuario
       .populate("productId", "name image price");
-      console.log("ENTRA HISTORIAL  response",response)
+
     res.json(response);
   } catch (error) {
     next(error);
@@ -25,15 +25,16 @@ router.post("/add", isAuthenticated, async (req, res, next) => {
     const foundUser = await User.findById(idUser).populate("cart.productId"); //coge el carrito del usuario y lo inserta en Compras
 
     const cloneCartArr = JSON.parse(JSON.stringify(foundUser.cart)); //clonar array del carrito
-  
+
     cloneCartArr.map((eachProduct) => {
       //recorrer array y agregar nuevo campo user con la id del usuario
-    
-      eachProduct.totalPrice=eachProduct.productId.price*eachProduct.quantity
-      eachProduct.user = idUser
+
+      eachProduct.totalPrice =
+        eachProduct.productId.price * eachProduct.quantity;
+      eachProduct.user = idUser;
       return eachProduct;
     });
-    
+
     await Compras.insertMany(cloneCartArr); // insertar en Compras todo el carrito
 
     res.json("Carrito insertado en compras");

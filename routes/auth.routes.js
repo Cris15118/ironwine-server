@@ -4,7 +4,7 @@ const User = require("../models/User.model");
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const isAuthenticated=require("../middlewares/isAuthenticated")
+const isAuthenticated = require("../middlewares/isAuthenticated");
 
 // POST "/api/auth/signup" registrar al usuario
 router.post("/signup", async (req, res, next) => {
@@ -18,7 +18,12 @@ router.post("/signup", async (req, res, next) => {
   const regexPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm;
 
   if (!regexPattern.test(password)) {
-    res.status(400).json({errorMessage:"La contraseña es débil. Necesita al menos 1 mayúscula y un caracter especial y un mínimo de 8 caracteres"})
+    res
+      .status(400)
+      .json({
+        errorMessage:
+          "La contraseña es débil. Necesita al menos 1 mayúscula y un caracter especial y un mínimo de 8 caracteres",
+      });
     return;
   }
   //verificar si el usuario esta registrado
@@ -32,7 +37,6 @@ router.post("/signup", async (req, res, next) => {
     //encriptar la contraseña
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
-    console.log(hashPassword);
 
     await User.create({
       username,
@@ -78,30 +82,24 @@ router.post("/login", async (req, res, next) => {
       _id: foundUser._id,
       email: foundUser.email,
       role: foundUser.role,
-      user: foundUser.username
+      user: foundUser.username,
     };
-    
+
     const authToken = jwt.sign(
-        payload,
-        process.env.TOKEN_SECRET,
-        { algorithm:"HS256", expiresIn:"7d"}, // expira en 7 dias
-       
-     )
+      payload,
+      process.env.TOKEN_SECRET,
+      { algorithm: "HS256", expiresIn: "7d" } // expira en 7 dias
+    );
 
-     res.json({authToken})
-
-
-
+    res.json({ authToken });
   } catch (err) {
     next(err);
   }
 });
 
 //GET "/api/auth/verify" indicarle al FE si el usuario esta logueado
-router.get("/verify" ,isAuthenticated,(req,res,next)=>{
-  
-    res.json({payload:req.payload})
-})
-
+router.get("/verify", isAuthenticated, (req, res, next) => {
+  res.json({ payload: req.payload });
+});
 
 module.exports = router;

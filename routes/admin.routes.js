@@ -5,17 +5,23 @@ const Product = require("../models/Product.model");
 //POST "/api/admin/create" recoge los datos de creación de productos y los añade a la BD
 
 router.post("/create", async (req, res, next) => {
-  
   try {
-    
     const { name, description, price, tipo, bodega, stock, image } = req.body;
- 
-    if(name==="" || !description || !price || !tipo || !bodega || !stock || !image)
-  {
-    
-    res.status(400).json({errorMessage:"Todos los campos son obligatorios."})
-    return
-  }
+
+    if (
+      name === "" ||
+      !description ||
+      !price ||
+      !tipo ||
+      !bodega ||
+      !stock ||
+      !image
+    ) {
+      res
+        .status(400)
+        .json({ errorMessage: "Todos los campos son obligatorios." });
+      return;
+    }
     await Product.create({
       name,
       description,
@@ -23,11 +29,10 @@ router.post("/create", async (req, res, next) => {
       tipo,
       bodega,
       stock,
-      image
+      image,
     });
     res.json("Documento creado");
   } catch (err) {
-    console.log(err);
     next(err);
   }
 });
@@ -38,8 +43,9 @@ router.put("/:id", async (req, res, next) => {
   const { name, description, price, tipo, bodega, stock, image } = req.body;
 
   if (!name || !description || !price || !tipo || !bodega || !stock || !image) {
-    
-    res.status(400).json({errorMessage:"Todos los campos son obligatorios."});
+    res
+      .status(400)
+      .json({ errorMessage: "Todos los campos son obligatorios." });
     return;
   }
 
@@ -51,7 +57,6 @@ router.put("/:id", async (req, res, next) => {
     );
     res.json("documento actualizado");
   } catch (err) {
-    console.log(err);
     next(err);
   }
 });

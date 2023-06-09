@@ -9,15 +9,10 @@ module.exports = (app) => {
     // always logs the error
     if (err.status === 401) {
       res.status(401).json({
-        errorMessage: "Token no valido o no entregado"
-      })
+        errorMessage: "Token no valido o no entregado",
+      });
       return;
     }
-
-
-    console.error("ERROR", req.method, req.path, err);
-
-    
 
     // only render if the error ocurred before sending the response
     if (!res.headersSent) {

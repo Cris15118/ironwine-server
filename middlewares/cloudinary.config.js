@@ -13,5 +13,4 @@ const storage = new CloudinaryStorage({
   params: { allowed_formats: ["jpg", "png"], folder: "ironwine" },
 });
 
-
-module.exports = multer({storage})
+module.exports = multer({ storage });
